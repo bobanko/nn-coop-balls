@@ -2,19 +2,18 @@
 export const jsPageHeight = 100;
 
 //todo: impl
-export function dist(x1,y1, x2,y2){
+export function dist(x1:number,y1:number, x2:number,y2:number):number{
     return 0; //dist between points
 }
 
 //todo: impl
-export function random(min,max){
+export function random(min:number,max:number):number{
     //range random
     return 0;
 }
 
-
-//todo: rewrite
-export function /*float*/ limit(/*float*/ value, /*float*/ max, /*float*/ min) {
+//todo: rewrite?
+export function limit(value:number, max:number, min:number):number {
     if (value < min)
         return min;
     if (value > max)
