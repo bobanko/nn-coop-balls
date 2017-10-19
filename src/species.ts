@@ -1,4 +1,4 @@
-import {random} from 'helpers';
+import {random} from './helpers';
 
 const hiddenNeuronsCount = 11;
 const outputCount = 2;

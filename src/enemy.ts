@@ -1,5 +1,6 @@
-import { distance, jsPageHeight, random } from 'helpers';
+import { distance, jsPageHeight, random } from './helpers';
 import { Defender } from './defender';
+import {Point} from './Point';
 
 export class Enemy extends Point{
 

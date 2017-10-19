@@ -1,0 +1,37 @@
+{
+  "name": "nn-coop-balls",
+  "version": "1.0.0",
+  "description": "js/ts rewrite of https://github.com/macarrony00/NN_CooperativeBalls",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "server": "node_modules\\.bin\\webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobanko/nn-coop-balls.git"
+  },
+  "keywords": [
+    "neural network"
+  ],
+  "author": "mishko.vladimir@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bobanko/nn-coop-balls/issues"
+  },
+  "homepage": "https://github.com/bobanko/nn-coop-balls#readme",
+  "devDependencies": {
+    "css-loader": "^0.28.4",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.10.1",
+    "html-webpack-plugin": "^2.30.1",
+    "less": "^2.7.2",
+    "less-loader": "^3.0.0",
+    "style-loader": "^0.13.2",
+    "ts-loader": "^3.0.3",
+    "typescript": "^2.5.3",
+    "url-loader": "^0.5.8",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.6.1"
+  }
+}
