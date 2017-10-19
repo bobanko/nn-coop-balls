@@ -19,6 +19,8 @@ let num_defenders = 6;
 let num_lives = 3;
 let stop = false;
 
+let graphicsFlag = false;
+
 let team: Defender[] = [];
 let mafia: Enemy[] = [];
 let speciesADN: Species[] = [];
@@ -51,13 +53,6 @@ const gbSize = {width: 1080, height: 720};
 const gb: HTMLCanvasElement = document.querySelector('#gameboard') as HTMLCanvasElement;
 const ctx = gb.getContext('2d');
 
-function stub(...args) {
-    console.warn('not impl.', args);
-}
-
-let fill = stub;
-let textSize = stub;
-
 
 function background(color: string) {
     ctx.fillStyle = color;
@@ -71,20 +66,33 @@ function line(x1, y1, x2, y2) {
     ctx.stroke();
 }
 
-function ellipse(x1, y1, radius, color) {
+function ellipse(x1, y1, radius, color?) {
     ctx.beginPath();
     ctx.arc(x1, y1, radius, 0, 2 * Math.PI, false);
-    ctx.fillStyle = color;
+
+    if (color) {
+        ctx.fillStyle = color;
+    }
+
     ctx.fill();
     ctx.lineWidth = 3;
     ctx.strokeStyle = 'black';
     ctx.stroke();
 }
 
-function text (value, x, y) {
-    ctx.font = '20px Arial';
-    ctx.fillStyle = 'black';
+function text(value, x, y, size = 20) {
+    //ctx.font = '20px Arial';
+    //ctx.fillStyle = 'black';
     ctx.fillText(value, x, y);
+}
+
+function fill(color, alpha = 255) {
+    //todo: impl alpha
+    ctx.fillStyle = color;
+}
+
+function textSize(size) {
+    ctx.font = `${size}px Arial`;
 }
 
 
@@ -124,7 +132,7 @@ function setup(): void {
 
     setupCharts();
 
-    console.log("Generation\t|\tAverage\t|\tMedian\t|\tTop All Time");
+    //console.log("Generation\t|\tAverage\t|\tMedian\t|\tTop All Time");
 
 
     for (let i = 0; i < num_defenders; i++)
@@ -144,15 +152,17 @@ function setup(): void {
 setup();
 draw();
 const SEC = 1000;
-let FPS = 10;
+let FPS = 60;
 //todo: gameloop?
 setInterval(() => draw(), SEC / FPS);
 
 function draw(): void {
 
-    background('#dddfd4');
+    //if (graphicsFlag)
+        background('#dddfd4');
 
-    graphics();
+    //if (graphicsFlag)
+        graphics();
 
     update_defenders();
     update_mafia();
@@ -176,12 +186,12 @@ function draw(): void {
         leaderboard = sortLeaderboard(leaderboard);
     }
 
-    if (lives == 0) //end of species
-    {
+    //end of species
+    if (lives == 0) {
         lives = num_lives;
         scores[species] = score;
         top_score = Math.max(top_score, score);
-        console.log(scores[species]);
+        //console.log(scores[species]);
         species++;
         score = 0;
         frame = 0;
@@ -240,17 +250,20 @@ function draw(): void {
                 let average = sum / 7;
                 if (average >= history_med[generation - 1]) {
                     evolution_end = true;
-                    console.log("Num of Species: " + num_species + " with mutation rate of " + mutation_rate + " got a score of " + (top_score - generation + Math.max(...history_med)));
+                   // console.log("Num of Species: " + num_species + " with mutation rate of " + mutation_rate + " got a score of " + (top_score - generation + Math.max(...history_med)));
                 }
             }
 
+            //draw only after gen 100
+            // if (generation == 100)
+            //     graphicsFlag = true;
 
             lineChart.setMaxY(top_score);
             medianChart.setMaxY(top_score);
             lineChart.setData(generation_array, history_top);
             medianChart.setData(generation_array, history_med);
 
-            console.log(generation + "\t|\t" + last_gen_avg + "\t|\t" + median + "\t|\t" + top_score);
+            //console.log(generation + "\t|\t" + last_gen_avg + "\t|\t" + median + "\t|\t" + top_score);
             generation++;
             species = 0;
 
@@ -314,12 +327,12 @@ function graphics(): void {
 
 function mafia_spawn(): void {
     //mafia spawn
-    if (random(1) < (last_spawn * 0.0001)) {
+    if (random(0, 1) < (last_spawn * 0.0001)) {
         let radius = (Math.exp(-frame / 20000) * 40);
         let vel = 2;
         if (frame > 10000)
             vel += frame / 10000;
-        console.log(`Spawn: Radius: ${radius} Vel:${vel}   (Frame:${frame})`);
+        //console.log(`Spawn: Radius: ${radius} Vel:${vel}   (Frame:${frame})`);
         mafia.push(new Enemy(radius, vel));
         last_spawn = 0;
     }
@@ -339,7 +352,7 @@ function update_mafia(): void {
                 mafia.splice(i, 1);
                 lives--;
             }
-            else if (graphics)
+            else /*if (graphicsFlag)*/
                 ellipse(mafia[i].getX(), mafia[i].getY(), mafia[i].getRadius(), '#fae596');
         }
     }
@@ -348,7 +361,7 @@ function update_mafia(): void {
 function update_defenders(): void {
     //update defenders
     for (let i = 0; i < team.length; i++) {
-        if (graphics) {
+        /*if (graphicsFlag)*/ {
             ellipse(team[i].getX(), team[i].getY(), team[i].getRadius(), '#3fb0ac');
         }
         //calcule inputs
@@ -361,14 +374,14 @@ function update_defenders(): void {
                 dist[j] = 99999;
         }
         let closest = Math.min(...dist);
-        console.log("1st: " + closest);
+        //console.log("1st: " + closest);
         let index1: number = 0;
         let index2: number = 0;
         while (closest != dist[index1])
             index1++;
         dist[index1] = 99999;
         closest = Math.min(...dist);
-        console.log("2nd: " + closest);
+        //console.log("2nd: " + closest);
         while (closest != dist[index2])
             index2++;
 
@@ -387,11 +400,11 @@ function update_defenders(): void {
         input[11] = (team[index2].getVelY() / 2.00) - input[3];
         input[12] = 1; //bias
 
-        console.log(`input: X:${input[0]} Y:${input[1]} VelX:${input[2]} VelY:${input[3]}`);
+        //console.log(`input: X:${input[0]} Y:${input[1]} VelX:${input[2]} VelY:${input[3]}`);
 
         let output: number[] = speciesADN[species].calculateOutput(input);
         team[i].change_acc(output[0] * max_acc_variation, output[1] * max_acc_variation);
-        console.log(`X: ${team[0].getX()} Y: ${team[0].getY()}`);
+        //console.log(`X: ${team[0].getX()} Y: ${team[0].getY()}`);
     }
 }
 
