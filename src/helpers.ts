@@ -2,8 +2,8 @@
 export const jsPageHeight = 100;
 
 //todo: impl
-export function dist(x1:number,y1:number, x2:number,y2:number):number{
-    return 0; //dist between points
+export function distance(x1:number, y1:number, x2:number, y2:number):number{
+    return 0; //distance between points
 }
 
 //todo: impl
