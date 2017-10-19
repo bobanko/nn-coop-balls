@@ -1,5 +1,5 @@
 //todo: get from page
-export const jsPageHeight = 100;
+export const jsPageHeight = 750;//todo: remove!
 
 //todo: impl
 export function distance(x1: number, y1: number, x2: number, y2: number): number {
