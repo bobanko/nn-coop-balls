@@ -1,6 +1,6 @@
 import { jsPageHeight, limit } from 'helpers';
 
-export class Defender {
+export class Defender extends Point {
 
 	radius = 35;
 	max_acc = 0.1;
@@ -11,10 +11,8 @@ export class Defender {
 	velX = 0;
 	velY = 0;
 
-	posX:number;
-	posY:number;
-
 	constructor(/*int*/ current:number, /*int*/ total:number) {
+		super();
 		//posX = random(600+radius,800-radius);
 		//posY = random(radius, jsPageHeight-radius);
 		this.posX = (300 + this.radius + 800 - this.radius) / 2;

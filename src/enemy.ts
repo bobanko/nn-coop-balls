@@ -1,14 +1,13 @@
-import { dist, jsPageHeight, random } from 'helpers';
+import { distance, jsPageHeight, random } from 'helpers';
 import { Defender } from './defender';
 
-export class Enemy {
+export class Enemy extends Point{
 
 	radius: number;
 	vel: number;
-	posX: number;
-	posY: number;
 
 	constructor(r: number, v: number) {
+		super();
 		this.radius = r;
 		this.vel = v;
 		this.posX = -this.radius;
@@ -36,7 +35,7 @@ export class Enemy {
 
 		//todo: any
 		for (let i = 0; i < team.length; i++) {
-			let dist = dist(this.posX, this.posY, team[i].getX(), team[i].getY());
+			let dist = distance(this.posX, this.posY, team[i].getX(), team[i].getY());
 			if (dist < (this.radius + team[i].getRadius()))
 				return true;
 		}
