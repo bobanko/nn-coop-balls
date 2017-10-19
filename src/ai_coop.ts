@@ -1,23 +1,14 @@
 //import org.gicentre.utils.stat.*; //todo: charts here
 
 
-import {jsPageHeight, random, distance, limit, arraySum, createMatrix, createArray, nf} from '../helpers';
+import {jsPageHeight, random, distance, limit, arraySum, createMatrix, createArray, nf} from './helpers';
 
-import {Defender} from '../defender';
-import {Enemy} from '../enemy';
-import {Species} from '../species';
-import {XYChart} from "../xyChart";
+import {Defender} from './defender';
+import {Enemy} from './enemy';
+import {Species} from './species';
+import {XYChart} from './xyChart';
 
-
-function stub(...args) {
-    console.warn('not impl.', args);
-}
-
-let line = stub;
-let fill = stub;
-let textSize = stub;
-let ellipse = stub;
-let background = stub;
+import './styles.less';
 
 
 //Global
@@ -56,6 +47,47 @@ let evolution_end = false;
 let time = performance.now();
 
 
+const gbSize = {width: 1080, height: 720};
+const gb: HTMLCanvasElement = document.querySelector('#gameboard') as HTMLCanvasElement;
+const ctx = gb.getContext('2d');
+
+function stub(...args) {
+    console.warn('not impl.', args);
+}
+
+let fill = stub;
+let textSize = stub;
+
+
+function background(color: string) {
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, gbSize.width, gbSize.height);
+}
+
+function line(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
+
+function ellipse(x1, y1, radius, color) {
+    ctx.beginPath();
+    ctx.arc(x1, y1, radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+}
+
+function text (value, x, y) {
+    ctx.font = '20px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText(value, x, y);
+}
+
+
 function setupCharts() {
     lineChart = new XYChart(this);
     // Axis formatting and labels.
@@ -86,8 +118,9 @@ function setupCharts() {
 
 
 function setup(): void {
-    //todo: set page size
-    //size(1080, 720);
+    gb.width = gbSize.width;
+    gb.height = gbSize.height;
+
 
     setupCharts();
 
@@ -107,12 +140,19 @@ function setup(): void {
     }
 }
 
+
+setup();
+draw();
+const SEC = 1000;
+let FPS = 10;
 //todo: gameloop?
-setInterval(() => draw(), 1000 / 30);
+setInterval(() => draw(), SEC / FPS);
 
 function draw(): void {
 
     background('#dddfd4');
+
+    graphics();
 
     update_defenders();
     update_mafia();
@@ -226,10 +266,6 @@ function draw(): void {
 //end of draw**************************************************************************************
 
 
-let text = function (value, x, y) {
-    //todo: impl text write
-};
-
 function reset_defenders(): void {
     for (let i = team.length - 1; i >= 0; i--)
         team.splice(i, 1);
@@ -290,7 +326,6 @@ function mafia_spawn(): void {
 }
 
 function update_mafia(): void {
-    fill('#fae596');
 
     for (let i = mafia.length - 1; i >= 0; i--) {
         mafia[i].updatePos();
@@ -305,17 +340,16 @@ function update_mafia(): void {
                 lives--;
             }
             else if (graphics)
-                ellipse(mafia[i].getX(), mafia[i].getY(), mafia[i].getRadius() * 2, mafia[i].getRadius() * 2);
+                ellipse(mafia[i].getX(), mafia[i].getY(), mafia[i].getRadius(), '#fae596');
         }
     }
 }
 
 function update_defenders(): void {
-    fill('#3fb0ac');
     //update defenders
     for (let i = 0; i < team.length; i++) {
         if (graphics) {
-            ellipse(team[i].getX(), team[i].getY(), team[i].getRadius() * 2, team[i].getRadius() * 2);
+            ellipse(team[i].getX(), team[i].getY(), team[i].getRadius(), '#3fb0ac');
         }
         //calcule inputs
         let dist: number[] = createArray(team.length);
