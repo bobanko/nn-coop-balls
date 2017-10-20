@@ -313,16 +313,17 @@ function update_mafia(): void {
 		if (mafia[i].intersect(team)) {
 			mafia.splice(i, 1); //delete
 			score++;
+			continue;
 		}
-		else {
-			let pos = mafia[i].getX();
-			if (pos >= 800 - mafia[i].getRadius()) {
-				mafia.splice(i, 1); //delete
-				lives--;
-			}
-			else
-				mafia[i].draw();
+
+		let pos = mafia[i].posX;
+		if (pos >= 800 - mafia[i].radius) {
+			mafia.splice(i, 1); //delete
+			lives--;
+			continue;
 		}
+
+		mafia[i].draw();
 	}
 }
 
@@ -334,7 +335,7 @@ function update_defenders(): void {
 		let dist: number[] = createArray(team.length);
 		for (let j = 0; j < team.length; j++) {
 			if (j != i) {
-				dist[j] = distance(team[i].getX(), team[i].getY(), team[j].getX(), team[j].getY());
+				dist[j] = distance(team[i].posX, team[i].posY, team[j].posX, team[j].posY);
 			}
 			else
 				dist[j] = 99999;
@@ -352,25 +353,25 @@ function update_defenders(): void {
 			index2++;
 
 		let input: number[] = createArray(13);
-		input[0] = (team[i].getX() - 600) / 200.00; //pos x
-		input[1] = (team[i].getY()) / (jsPageHeight / 2.00);//pos y
-		input[2] = team[i].getVelX() / 2.00;//vel x
-		input[3] = (team[i].getVelY() / 2.00);//vel y
-		input[4] = ((team[index1].getX() - 600) / 200.00) - input[0];
-		input[5] = ((team[index1].getY() / (jsPageHeight / 2.00))) - input[1];
-		input[6] = (team[index1].getVelX() / 2.00) - input[2];
-		input[7] = (team[index1].getVelY() / 2.00) - input[3];
-		input[8] = ((team[index2].getX() - 600) / 200.00) - input[0];
-		input[9] = ((team[index2].getY() / (jsPageHeight / 2.00))) - input[1];
-		input[10] = (team[index2].getVelX() / 2.00) - input[2];
-		input[11] = (team[index2].getVelY() / 2.00) - input[3];
+		input[0] = (team[i].posX - 600) / 200.00; //pos x
+		input[1] = (team[i].posY) / (jsPageHeight / 2.00);//pos y
+		input[2] = team[i].velX / 2.00;//vel x
+		input[3] = (team[i].velY / 2.00);//vel y
+		input[4] = ((team[index1].posX - 600) / 200.00) - input[0];
+		input[5] = ((team[index1].posY / (jsPageHeight / 2.00))) - input[1];
+		input[6] = (team[index1].velX / 2.00) - input[2];
+		input[7] = (team[index1].velY / 2.00) - input[3];
+		input[8] = ((team[index2].posX - 600) / 200.00) - input[0];
+		input[9] = ((team[index2].posY / (jsPageHeight / 2.00))) - input[1];
+		input[10] = (team[index2].velX / 2.00) - input[2];
+		input[11] = (team[index2].velY / 2.00) - input[3];
 		input[12] = 1; //bias
 
 		//console.log(`input: X:${input[0]} Y:${input[1]} VelX:${input[2]} VelY:${input[3]}`);
 
 		let output: number[] = speciesADN[species].calculateOutput(input);
 		team[i].change_acc(output[0] * max_acc_variation, output[1] * max_acc_variation);
-		//console.log(`X: ${team[0].getX()} Y: ${team[0].getY()}`);
+		//console.log(`X: ${team[0].posX} Y: ${team[0].posY}`);
 	}
 }
 

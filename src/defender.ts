@@ -35,26 +35,5 @@ export class Defender extends Circle {
 		this.posY = limit(this.posY, jsPageHeight - this.radius, this.radius);
 	}
 
-	//todo: remove getters
-	getRadius() {
-		return this.radius;
-	}
-
-	getX() {
-		return this.posX;
-	}
-
-	getVelY() {
-		return this.velY;
-	}
-
-	getVelX() {
-		return this.velX;
-	}
-
-	getY() {
-		return this.posY;
-	}
-
 }
 
