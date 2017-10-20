@@ -1,4 +1,4 @@
-import {random} from './helpers';
+import {createMatrix, random} from './helpers';
 
 const hiddenNeuronsCount = 11;
 const outputCount = 2;
@@ -9,13 +9,11 @@ export class Species {
     first_layer: number[][];
     second_layer: number[][];
 
-    constructor(isRandom: boolean) {//boolean
+    constructor(isRandom: boolean) {
 
         //todo: layer sizes to vars
-        this.first_layer = [];
-        /*new float[13][10]*/
-        this.second_layer = [];
-        /*new float[hiddenNeuronsCount][outputCount]*/
+        this.first_layer = createMatrix(13, 10);
+        this.second_layer = createMatrix(hiddenNeuronsCount, outputCount);
 
         if (isRandom) {
             for (let /*int*/ i = 0; i < 13; i++) {
