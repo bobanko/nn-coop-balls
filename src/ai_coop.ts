@@ -13,7 +13,7 @@ import './styles.less';
 
 //Global
 let mutation_rate = 0.005;
-let num_species = 25;
+let speciesTotal = 25;//num_species
 let max_acc_variation = 0.01;
 let num_defenders = 6;
 let num_lives = 3;
@@ -30,7 +30,7 @@ let frame = 1.00;
 let lives = num_lives;
 let species = 0;
 let score = 0;
-let scores: number[] = createArray(num_species);
+let scores: number[] = createArray(speciesTotal);
 let top_score = 0;
 let top_score_gen = 0;
 let last_gen_avg = 0;
@@ -138,7 +138,7 @@ function setup(): void {
     for (let i = 0; i < num_defenders; i++)
         team.push(new Defender(i + 1, num_defenders));
 
-    for (let i = 0; i < num_species; i++)
+    for (let i = 0; i < speciesTotal; i++)
         speciesADN.push(new Species(true));
 
     for (let i = 0; i < 10; i++) {
@@ -158,11 +158,9 @@ setInterval(() => draw(), SEC / FPS);
 
 function draw(): void {
 
-    //if (graphicsFlag)
-        background('#dddfd4');
+    background('#dddfd4');
 
-    //if (graphicsFlag)
-        graphics();
+    graphics();
 
     update_defenders();
     update_mafia();
@@ -197,14 +195,14 @@ function draw(): void {
         frame = 0;
         last_spawn = 0;
         reset_defenders();
-        if (species == num_species) //end of generation
+        if (species === speciesTotal) //end of generation
         {
             //score order
-            let ordered_scores: number[] = createArray(num_species);
+            let ordered_scores: number[] = createArray(speciesTotal);
             let ordered_speciesADN: Species[] = [];
             /*new Array < Species > ()*/
 
-            for (let i = 0; i < num_species; i++) {
+            for (let i = 0; i < speciesTotal; i++) {
                 let top_score = Math.max(...scores);
                 let index = 0;
                 while (scores[index] != top_score)
@@ -219,18 +217,18 @@ function draw(): void {
             //new species
             let new_speciesADN: Species[] = [];
             new_speciesADN.push(speciesADN[0]);
-            for (let i = 1; i < num_species; i++) {
+            for (let i = 1; i < speciesTotal; i++) {
                 new_speciesADN.push(newSpecies(speciesADN, scores));
             }
             speciesADN = new_speciesADN;
-            let median = scores[num_species / 2];
+            let median = scores[speciesTotal / 2];
             //reset scores
             let total_score = 0;
-            for (let i = 0; i < num_species; i++) {
+            for (let i = 0; i < speciesTotal; i++) {
                 total_score += scores[i];
                 scores[i] = 0;
             }
-            last_gen_avg = total_score / num_species;
+            last_gen_avg = total_score / speciesTotal;
             top_gen_avg = Math.max(top_gen_avg, last_gen_avg);
             history_avg.push(top_gen_avg);
             //history_top = append(history_top,top_score); //top all time graph
@@ -297,7 +295,7 @@ function graphics(): void {
     fill('#173e43');
     textSize(20);
     text("Generation " + generation, 810, 30);
-    text("Species: " + (species + 1) + "/" + num_species, 810, 55);
+    text("Species: " + (species + 1) + "/" + speciesTotal, 810, 55);
     text("Top Score: " + top_score, 810, 80);
     textSize(22);
     text("Generation Info", 810, 115);
@@ -343,16 +341,16 @@ function update_mafia(): void {
     for (let i = mafia.length - 1; i >= 0; i--) {
         mafia[i].updatePos();
         if (mafia[i].intersect(team)) {
-            mafia.splice(i, 1);
+            mafia.splice(i, 1); //delete
             score++;
         }
         else {
             let pos = mafia[i].getX();
             if (pos >= 800 - mafia[i].getRadius()) {
-                mafia.splice(i, 1);
+                mafia.splice(i, 1); //delete
                 lives--;
             }
-            else /*if (graphicsFlag)*/
+            else
                 ellipse(mafia[i].getX(), mafia[i].getY(), mafia[i].getRadius(), '#fae596');
         }
     }
@@ -361,9 +359,7 @@ function update_mafia(): void {
 function update_defenders(): void {
     //update defenders
     for (let i = 0; i < team.length; i++) {
-        /*if (graphicsFlag)*/ {
-            ellipse(team[i].getX(), team[i].getY(), team[i].getRadius(), '#3fb0ac');
-        }
+        ellipse(team[i].getX(), team[i].getY(), team[i].getRadius(), '#3fb0ac');
         //calcule inputs
         let dist: number[] = createArray(team.length);
         for (let j = 0; j < team.length; j++) {
@@ -411,13 +407,13 @@ function update_defenders(): void {
 function newSpecies(ancestor: Species[], scores: number[]): Species {
     let baby = new Species(false);
     let total_score = 0;
-    let float_scores: number[] = createArray(num_species);
+    let float_scores: number[] = createArray(speciesTotal);
     //normalize
-    for (let i = 0; i < num_species; i++) {
+    for (let i = 0; i < speciesTotal; i++) {
         total_score += scores[i] ** 2;
     }
 
-    for (let i = 0; i < num_species; i++) {
+    for (let i = 0; i < speciesTotal; i++) {
         float_scores[i] = (scores[i] ** 2) / total_score;
     }
 
