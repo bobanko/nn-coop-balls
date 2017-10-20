@@ -1,18 +1,23 @@
 import { distance, jsPageHeight, random } from './helpers';
 import { Defender } from './defender';
-import {Point} from './Point';
+import {Circle} from './circle';
+import { ellipse } from './canvasHelper';
 
-export class Enemy extends Point{
 
-	radius: number;
+const color = '#fae596';
+
+
+export class Enemy extends Circle{
+
 	vel: number;
 
-	constructor(r: number, v: number) {
-		super();
-		this.radius = r;
+
+
+	constructor(posX, posY, radius: number, v: number) {
+		super(posX, posY, radius, color);
+
 		this.vel = v;
-		this.posX = -this.radius;
-		this.posY = random(this.radius, jsPageHeight - this.radius);
+
 	}
 
 	updatePos(): void {
@@ -41,5 +46,10 @@ export class Enemy extends Point{
 				return true;
 		}
 		return false;
+	}
+
+
+	draw(){
+		ellipse(this.posX, this.posY, this.radius, this.color);
 	}
 }

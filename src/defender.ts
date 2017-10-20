@@ -1,67 +1,60 @@
-import {jsPageHeight, limit} from './helpers';
-import {Point} from './Point';
+import { jsPageHeight, limit } from './helpers';
+import { Circle } from './circle';
 
-export class Defender extends Point {
+const radius = 35;
+const color = '#3fb0ac';
 
-    radius = 35;
-    max_acc = 0.1;
-    max_vel = 2;
+export class Defender extends Circle {
 
-    accX = 0;
-    accY = 0;
-    velX = 0;
-    velY = 0;
+	max_acc = 0.1;
+	max_vel = 2;
 
-    constructor(/*int*/ current: number, /*int*/ total: number) {
-        super();
-        //posX = random(600+radius,800-radius);
-        //posY = random(radius, jsPageHeight-radius);
-        this.posX = (300 + this.radius + 800 - this.radius) / 2;
-        this.posY = (jsPageHeight / total) * current;
-    }
+	accX = 0;
+	accY = 0;
+	velX = 0;
+	velY = 0;
 
-    change_acc(/*float*/ changeX: number, /*float*/ changeY: number): void {
-        this.accX += changeX;
-        this.accY += changeY;
-        this.accX = limit(this.accX, this.max_acc, -this.max_acc);
-        this.accY = limit(this.accY, this.max_acc, -this.max_acc);
+	constructor(posX:number, posY:number) {
+		super(posX, posY, radius, color);
+	}
 
-        this.velX += this.accX;
-        this.velY += this.accY;
-        this.velX = limit(this.velX, this.max_vel, -this.max_vel);
-        this.velY = limit(this.velY, this.max_vel, -this.max_vel);
+	change_acc(changeX: number, changeY: number): void {
+		this.accX += changeX;
+		this.accY += changeY;
+		this.accX = limit(this.accX, this.max_acc, -this.max_acc);
+		this.accY = limit(this.accY, this.max_acc, -this.max_acc);
 
-        this.posX += this.velX;
-        this.posY += this.velY;
-        this.posX = limit(this.posX, 800 - this.radius, 300 + this.radius);
-        this.posY = limit(this.posY, jsPageHeight - this.radius, this.radius);
-    }
+		this.velX += this.accX;
+		this.velY += this.accY;
+		this.velX = limit(this.velX, this.max_vel, -this.max_vel);
+		this.velY = limit(this.velY, this.max_vel, -this.max_vel);
 
-    //todo: remove getters
-    /*int*/
-    getRadius() {
-        return this.radius;
-    }
+		this.posX += this.velX;
+		this.posY += this.velY;
+		this.posX = limit(this.posX, 800 - this.radius, 300 + this.radius);
+		this.posY = limit(this.posY, jsPageHeight - this.radius, this.radius);
+	}
 
-    /*int*/
-    getX() {
-        return this.posX;
-    }
+	//todo: remove getters
+	getRadius() {
+		return this.radius;
+	}
 
-    /*int*/
-    getVelY() {
-        return this.velY;
-    }
+	getX() {
+		return this.posX;
+	}
 
-    /*int*/
-    getVelX() {
-        return this.velX;
-    }
+	getVelY() {
+		return this.velY;
+	}
 
-    /*int*/
-    getY() {
-        return this.posY;
-    }
+	getVelX() {
+		return this.velX;
+	}
+
+	getY() {
+		return this.posY;
+	}
 
 }
 
