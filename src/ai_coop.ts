@@ -369,6 +369,7 @@ function update_defenders(): void {
 
 		//console.log(`input: X:${input[0]} Y:${input[1]} VelX:${input[2]} VelY:${input[3]}`);
 
+		//todo: fix bug with species overflow
 		let output: number[] = speciesADN[species].calculateOutput(input);
 		team[i].change_acc(output[0] * max_acc_variation, output[1] * max_acc_variation);
 		//console.log(`X: ${team[0].posX} Y: ${team[0].posY}`);
