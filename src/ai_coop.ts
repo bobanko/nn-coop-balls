@@ -112,8 +112,8 @@ function setup(): void {
 setup();
 draw();
 const SEC = 1000;
-let FPS = 60;
-//todo: gameloop?
+let FPS = 160;
+//todo: gameloop? use RAF
 setInterval(() => draw(), SEC / FPS);
 
 function draw(): void {
@@ -149,8 +149,8 @@ function draw(): void {
 		lives = num_lives;
 		scores[species] = score;
 		top_score = Math.max(top_score, score);
-		//console.log(scores[species]);
 		species++;
+
 		score = 0;
 		frame = 0;
 		last_spawn = 0;
@@ -224,7 +224,6 @@ function draw(): void {
 			//console.log(generation + "\t|\t" + last_gen_avg + "\t|\t" + median + "\t|\t" + top_score);
 			generation++;
 			species = 0;
-
 		}
 	}
 
@@ -253,7 +252,7 @@ function graphics(): void {
 	}
 
 	function renderLives(current = 0, max = num_lives){
-		return [...Array(lives).fill('❤️'), ...Array(max-lives).fill('🖤')].join('');
+		return [...Array(lives).fill('💗'), ...Array(max-lives).fill('🖤')].join('');
 	}
 	//Static Graphics
 	line(300, 0, 300, jsPageHeight);
@@ -285,6 +284,7 @@ function graphics(): void {
 		text((i + 1) + '. Generation ' + leaderboard[1][i] + ': ' + leaderboard[0][i], 810, 310 + i * 21);
 	}
 	textSize(12);
+
 	lineChart.draw(810, 535, 270, 175);
 	medianChart.draw(810, 535, 270, 175);
 }
@@ -297,6 +297,9 @@ function mafia_spawn(): void {
 		if (frame > 10000)
 			vel += frame / 10000;
 		//console.log(`Spawn: Radius: ${radius} Vel:${vel}   (Frame:${frame})`);
+
+
+		vel = 10;//todo: remove (debug only)
 
 		let posX = -radius;
 		let posY = random(radius, jsPageHeight - radius);
@@ -369,7 +372,6 @@ function update_defenders(): void {
 
 		//console.log(`input: X:${input[0]} Y:${input[1]} VelX:${input[2]} VelY:${input[3]}`);
 
-		//todo: fix bug with species overflow
 		let output: number[] = speciesADN[species].calculateOutput(input);
 		team[i].change_acc(output[0] * max_acc_variation, output[1] * max_acc_variation);
 		//console.log(`X: ${team[0].posX} Y: ${team[0].posY}`);
