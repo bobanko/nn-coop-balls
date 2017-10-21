@@ -1,11 +1,6 @@
 //todo: get from page
 export const jsPageHeight = 750;//todo: remove!
 
-//todo: impl
-export function distance(x1: number, y1: number, x2: number, y2: number): number {
-    return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
-}
-
 export function random(min: number = 0, max: number = 1): number {
     //range random
     return min + Math.random() * (max - min);
@@ -29,9 +24,4 @@ export function createArray(length: number, value = 0): number[] {
 
 export function createMatrix(rows: number, cols: number, value = 0): number[][] {
     return createArray(rows).map(() => createArray(cols, value));
-}
-
-
-export function nf(value: number, ...args) {
-    return value;
 }
