@@ -1,15 +1,16 @@
 //import org.gicentre.utils.stat.*; //todo: charts here
 
 
-import { arraySum, createArray, createMatrix, distance, jsPageHeight, random } from './helpers';
+import {arraySum, createArray, createMatrix, jsPageHeight, random} from './helpers';
 
-import { Defender } from './defender';
-import { Enemy } from './enemy';
-import { Species } from './species';
-import { XYChart } from './xyChart';
+import {Defender} from './defender';
+import {Enemy} from './enemy';
+import {Species} from './species';
+import {XYChart} from './xyChart';
 
 import './styles.less';
-import { background, fill, line, text, textSize } from './canvasHelper';
+import {background, fill, line, text, textSize} from './canvasHelper';
+import {Vector} from './vector';
 
 
 //Global
@@ -79,12 +80,12 @@ function setupCharts() {
 }
 
 
-function createDefenders(){
+function createDefenders() {
 	for (let i = 0; i < num_defenders; i++) {
 
 		let radius = 35;
-		let x =(300 + radius + 800 - radius) / 2;
-		let y= (jsPageHeight / num_defenders) * i;
+		let x = (300 + radius + 800 - radius) / 2;
+		let y = (jsPageHeight / num_defenders) * i;
 
 		let defender = new Defender(x, y);
 		team.push(defender);
@@ -108,7 +109,6 @@ function setup(): void {
 	}
 }
 
-
 setup();
 draw();
 const SEC = 1000;
@@ -117,7 +117,6 @@ let FPS = 160;
 setInterval(() => draw(), SEC / FPS);
 
 function draw(): void {
-
 	background('#dddfd4');
 
 	graphics();
@@ -247,13 +246,17 @@ function reset_defenders(): void {
 }
 
 function graphics(): void {
-	function renderScore(score = 0){
-		return [...Array(score).fill('💎')].join('') || 0;
+	function renderScore(score = 0) {
+		const maxScore = 3;
+		return (score > maxScore)
+			? `💎x${score}`
+			: ([...Array(score).fill('💎')].join('') || 0);
 	}
 
-	function renderLives(current = 0, max = num_lives){
-		return [...Array(lives).fill('💗'), ...Array(max-lives).fill('🖤')].join('');
+	function renderLives(current = 0, max = num_lives) {
+		return [...Array(lives).fill('💗'), ...Array(max - lives).fill('🖤')].join('');
 	}
+
 	//Static Graphics
 	line(300, 0, 300, jsPageHeight);
 	line(800, 0, 800, jsPageHeight);
@@ -338,7 +341,7 @@ function update_defenders(): void {
 		let dist: number[] = createArray(team.length);
 		for (let j = 0; j < team.length; j++) {
 			if (j != i) {
-				dist[j] = distance(team[i].posX, team[i].posY, team[j].posX, team[j].posY);
+				dist[j] = Vector.distance({x: team[i].posX, y: team[i].posY}, {x: team[j].posX, y: team[j].posY});
 			}
 			else
 				dist[j] = 99999;
