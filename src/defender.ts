@@ -1,7 +1,8 @@
-import { jsPageHeight, limit } from './helpers';
-import { Circle } from './circle';
+import {jsPageHeight, limit} from './helpers';
+import {Circle} from './circle';
 
 const radius = 35;
+const boxBounds = {start: 300, end: 800};
 const color = '#3fb0ac';
 
 export class Defender extends Circle {
@@ -14,7 +15,7 @@ export class Defender extends Circle {
 	velX = 0;
 	velY = 0;
 
-	constructor(posX:number, posY:number) {
+	constructor(posX: number, posY: number) {
 		super(posX, posY, radius, color);
 	}
 
@@ -29,11 +30,11 @@ export class Defender extends Circle {
 		this.velX = limit(this.velX, this.max_vel, -this.max_vel);
 		this.velY = limit(this.velY, this.max_vel, -this.max_vel);
 
-		this.posX += this.velX;
-		this.posY += this.velY;
-		this.posX = limit(this.posX, 800 - this.radius, 300 + this.radius);
+
+		super.updatePos();
+
+		this.posX = limit(this.posX, boxBounds.end - this.radius, boxBounds.start + this.radius);
 		this.posY = limit(this.posY, jsPageHeight - this.radius, this.radius);
 	}
-
 }
 

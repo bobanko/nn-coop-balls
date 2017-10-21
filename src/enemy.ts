@@ -1,32 +1,26 @@
-import { distance, jsPageHeight, random } from './helpers';
-import { Defender } from './defender';
+import {Defender} from './defender';
 import {Circle} from './circle';
-import { ellipse } from './canvasHelper';
+import {Vector} from './vector';
 
 
 const color = '#fae596';
 
 
-export class Enemy extends Circle{
+export class Enemy extends Circle {
 
-	vel: number;
+	velX: number;
 
-	constructor(posX, posY, radius: number, v: number) {
+	constructor(posX, posY, radius: number, velX: number) {
 		super(posX, posY, radius, color);
 
-		this.vel = v;
+		this.velX = velX;
 
 	}
 
-	updatePos(): void {
-		this.posX += this.vel;
-	}
-
-	intersect(team: Array<Defender>): boolean {//ArrayList<defender> team
-
-		//todo: any
+	intersect(team: Array<Defender>): boolean {
+		//todo: use any
 		for (let i = 0; i < team.length; i++) {
-			let dist = distance(this.posX, this.posY, team[i].posX, team[i].posY);
+			let dist = Vector.distance({x: this.posX, y: this.posY}, {x: team[i].posX, y: team[i].posY});
 			if (dist < (this.radius + team[i].radius))
 				return true;
 		}
