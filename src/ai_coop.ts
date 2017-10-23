@@ -1,7 +1,7 @@
 //import org.gicentre.utils.stat.*; //todo: charts here
 
 
-import {arraySum, createArray, createMatrix, jsPageHeight, random} from './helpers';
+import { arraySum, boxBounds, createArray, createMatrix, jsPageHeight, random } from './helpers';
 
 import {Defender} from './defender';
 import {Enemy} from './enemy';
@@ -83,8 +83,7 @@ function setupCharts() {
 function createDefenders() {
 	for (let i = 0; i < num_defenders; i++) {
 
-		let radius = 35;
-		let x = (300 + radius + 800 - radius) / 2;
+		let x = (boxBounds.start + boxBounds.end) / 2;
 		let y = (jsPageHeight / num_defenders) * i;
 
 		let defender = new Defender(x, y);
@@ -236,13 +235,11 @@ function draw(): void {
 
 
 function reset_defenders(): void {
-	for (let i = team.length - 1; i >= 0; i--)
-		team.splice(i, 1);
+	team.splice(0);
 
 	createDefenders();
 
-	for (let i = mafia.length - 1; i >= 0; i--)
-		mafia.splice(i, 1);
+	mafia.splice(0);
 }
 
 function graphics(): void {
@@ -258,8 +255,8 @@ function graphics(): void {
 	}
 
 	//Static Graphics
-	line(300, 0, 300, jsPageHeight);
-	line(800, 0, 800, jsPageHeight);
+	line(boxBounds.start, 0, boxBounds.start, jsPageHeight);
+	line(boxBounds.end, 0, boxBounds.end, jsPageHeight);
 	fill('#173e43');
 	textSize(20);
 	text('Generation ' + generation, 810, 30);
@@ -323,7 +320,7 @@ function update_mafia(): void {
 		}
 
 		let pos = mafia[i].posX;
-		if (pos >= 800 - mafia[i].radius) {
+		if (pos >= boxBounds.end - mafia[i].radius) {
 			mafia.splice(i, 1); //delete
 			lives--;
 			continue;
@@ -357,6 +354,7 @@ function update_defenders(): void {
 		//console.log("2nd: " + closest);
 		while (closest != dist[index2])
 			index2++;
+
 
 		let input: number[] = createArray(13);
 		input[0] = (team[i].posX - 600) / 200.00; //pos x
