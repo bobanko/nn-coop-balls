@@ -1,5 +1,7 @@
 //todo: get from page
 export const jsPageHeight = 750;//todo: remove!
+export const boxBounds = {start: 300, end: 800};
+
 
 export function random(min: number = 0, max: number = 1): number {
     //range random

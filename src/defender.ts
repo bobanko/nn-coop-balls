@@ -1,8 +1,8 @@
-import {jsPageHeight, limit} from './helpers';
+import { boxBounds, jsPageHeight, limit } from './helpers';
 import {Circle} from './circle';
 
 const radius = 35;
-const boxBounds = {start: 300, end: 800};
+
 const color = '#3fb0ac';
 
 export class Defender extends Circle {
