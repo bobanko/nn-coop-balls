@@ -1,27 +1,26 @@
-import {ellipse, line} from './canvasHelper';
-import {Vector} from './vector';
+import { ellipse, line } from './canvasHelper';
+import { TVector, Vector } from './vector';
 
 export abstract class Circle {
 
-	velX: number = 0;
-	velY: number = 0;
+	position: Vector = Vector.zero;
+	velocity: Vector = Vector.zero;
 
-	constructor(public posX: number, public posY: number,
+	constructor(position: TVector,
 				public radius: number,
 				public color: string) {
-
+		this.position = new Vector(position.x, position.y);
 	}
 
 	updatePos() {
-		this.posX += this.velX;
-		this.posY += this.velY;
+		this.position = this.position.add(this.velocity);
 	}
 
 	draw() {
-		ellipse(this.posX, this.posY, this.radius, this.color);
-		let velNormalized = new Vector(this.velX, this.velY).normalize();
+		ellipse(this.position.x, this.position.y, this.radius, this.color);
+		let velNormalized = this.velocity.normalize();
 		let velDirection = velNormalized.multiply(this.radius);
 
-		line(this.posX, this.posY, this.posX + velDirection.x, this.posY + velDirection.y);
+		line(this.position.x, this.position.y, this.position.x + velDirection.x, this.position.y + velDirection.y);
 	}
 }

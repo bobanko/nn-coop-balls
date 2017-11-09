@@ -1,26 +1,21 @@
-import {Defender} from './defender';
-import {Circle} from './circle';
-import {Vector} from './vector';
-
+import { Defender } from './defender';
+import { Circle } from './circle';
+import { TVector, Vector } from './vector';
 
 const color = '#fae596';
 
-
 export class Enemy extends Circle {
 
-	velX: number;
+	constructor(position: TVector, radius: number) {
+		super(position, radius, color);
 
-	constructor(posX, posY, radius: number, velX: number) {
-		super(posX, posY, radius, color);
-
-		this.velX = velX;
-
+		console.log('oy');
 	}
 
 	intersect(team: Array<Defender>): boolean {
-		//todo: use any
+		//todo: use .any()
 		for (let i = 0; i < team.length; i++) {
-			let dist = Vector.distance({x: this.posX, y: this.posY}, {x: team[i].posX, y: team[i].posY});
+			let dist = Vector.distance(this.position, team[i].position);
 			if (dist < (this.radius + team[i].radius))
 				return true;
 		}

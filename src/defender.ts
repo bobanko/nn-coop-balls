@@ -1,5 +1,6 @@
 import { boxBounds, jsPageHeight, limit } from './helpers';
 import {Circle} from './circle';
+import { TVector, Vector } from './vector';
 
 const radius = 35;
 
@@ -10,31 +11,27 @@ export class Defender extends Circle {
 	max_acc = 0.1;
 	max_vel = 2;
 
-	accX = 0;
-	accY = 0;
-	velX = 0;
-	velY = 0;
+	acc: Vector = Vector.zero;
 
-	constructor(posX: number, posY: number) {
-		super(posX, posY, radius, color);
+	constructor(position: TVector) {
+		super(position, radius, color);
 	}
 
 	change_acc(changeX: number, changeY: number): void {
-		this.accX += changeX;
-		this.accY += changeY;
-		this.accX = limit(this.accX, this.max_acc, -this.max_acc);
-		this.accY = limit(this.accY, this.max_acc, -this.max_acc);
+		this.acc.x += changeX;
+		this.acc.y += changeY;
+		this.acc.x = limit(this.acc.x, this.max_acc, -this.max_acc);
+		this.acc.y = limit(this.acc.y, this.max_acc, -this.max_acc);
 
-		this.velX += this.accX;
-		this.velY += this.accY;
-		this.velX = limit(this.velX, this.max_vel, -this.max_vel);
-		this.velY = limit(this.velY, this.max_vel, -this.max_vel);
-
+		this.velocity = this.velocity.add(this.acc);
+		this.velocity.y += this.acc.y;
+		this.velocity.x = limit(this.velocity.x, this.max_vel, -this.max_vel);
+		this.velocity.y = limit(this.velocity.y, this.max_vel, -this.max_vel);
 
 		super.updatePos();
 
-		this.posX = limit(this.posX, boxBounds.end - this.radius, boxBounds.start + this.radius);
-		this.posY = limit(this.posY, jsPageHeight - this.radius, this.radius);
+		this.position.x = limit(this.position.x, boxBounds.end - this.radius, boxBounds.start + this.radius);
+		this.position.y = limit(this.position.y, jsPageHeight - this.radius, this.radius);
 	}
 }
 

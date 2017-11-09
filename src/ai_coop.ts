@@ -1,17 +1,15 @@
 //import org.gicentre.utils.stat.*; //todo: charts here
 
-
 import { arraySum, boxBounds, createArray, createMatrix, jsPageHeight, random } from './helpers';
 
-import {Defender} from './defender';
-import {Enemy} from './enemy';
-import {Species} from './species';
-import {XYChart} from './xyChart';
+import { Defender } from './defender';
+import { Enemy } from './enemy';
+import { Species } from './species';
+import { XYChart } from './xyChart';
 
 import './styles.less';
-import {background, fill, line, text, textSize} from './canvasHelper';
-import {Vector} from './vector';
-
+import { background, fill, line, text, textSize } from './canvasHelper';
+import { Vector } from './vector';
 
 //Global
 let mutation_rate = 0.005;
@@ -86,13 +84,12 @@ function createDefenders() {
 		let x = (boxBounds.start + boxBounds.end) / 2;
 		let y = (jsPageHeight / num_defenders) * i;
 
-		let defender = new Defender(x, y);
+		let defender = new Defender({x, y});
 		team.push(defender);
 	}
 }
 
 function setup(): void {
-
 	setupCharts();
 
 	//console.log("Generation\t|\tAverage\t|\tMedian\t|\tTop All Time");
@@ -298,13 +295,17 @@ function mafia_spawn(): void {
 			vel += frame / 10000;
 		//console.log(`Spawn: Radius: ${radius} Vel:${vel}   (Frame:${frame})`);
 
-
 		vel = 10;//todo: remove (debug only)
 
-		let posX = -radius;
-		let posY = random(radius, jsPageHeight - radius);
+		let enemyStartPos = {
+			x: -radius,
+			y: random(radius, jsPageHeight - radius)
+		};
 
-		mafia.push(new Enemy(posX, posY, radius, vel));
+		let enemy = new Enemy(enemyStartPos, radius);
+		enemy.velocity.x = vel;
+		mafia.push(enemy);
+
 		last_spawn = 0;
 	}
 }
@@ -319,7 +320,7 @@ function update_mafia(): void {
 			continue;
 		}
 
-		let pos = mafia[i].posX;
+		let pos = mafia[i].position.x;
 		if (pos >= boxBounds.end - mafia[i].radius) {
 			mafia.splice(i, 1); //delete
 			lives--;
@@ -338,7 +339,10 @@ function update_defenders(): void {
 		let dist: number[] = createArray(team.length);
 		for (let j = 0; j < team.length; j++) {
 			if (j != i) {
-				dist[j] = Vector.distance({x: team[i].posX, y: team[i].posY}, {x: team[j].posX, y: team[j].posY});
+				dist[j] = Vector.distance({x: team[i].position.x, y: team[i].position.y}, {
+					x: team[j].position.x,
+					y: team[j].position.y
+				});
 			}
 			else
 				dist[j] = 99999;
@@ -357,25 +361,25 @@ function update_defenders(): void {
 
 
 		let input: number[] = createArray(13);
-		input[0] = (team[i].posX - 600) / 200.00; //pos x
-		input[1] = (team[i].posY) / (jsPageHeight / 2.00);//pos y
-		input[2] = team[i].velX / 2.00;//vel x
-		input[3] = (team[i].velY / 2.00);//vel y
-		input[4] = ((team[index1].posX - 600) / 200.00) - input[0];
-		input[5] = ((team[index1].posY / (jsPageHeight / 2.00))) - input[1];
-		input[6] = (team[index1].velX / 2.00) - input[2];
-		input[7] = (team[index1].velY / 2.00) - input[3];
-		input[8] = ((team[index2].posX - 600) / 200.00) - input[0];
-		input[9] = ((team[index2].posY / (jsPageHeight / 2.00))) - input[1];
-		input[10] = (team[index2].velX / 2.00) - input[2];
-		input[11] = (team[index2].velY / 2.00) - input[3];
+		input[0] = (team[i].position.x - 600) / 200.00; //pos x
+		input[1] = (team[i].position.y) / (jsPageHeight / 2.00);//pos y
+		input[2] = team[i].velocity.x / 2.00;//vel x
+		input[3] = (team[i].velocity.y / 2.00);//vel y
+		input[4] = ((team[index1].position.x - 600) / 200.00) - input[0];
+		input[5] = ((team[index1].position.y / (jsPageHeight / 2.00))) - input[1];
+		input[6] = (team[index1].velocity.x / 2.00) - input[2];
+		input[7] = (team[index1].velocity.y / 2.00) - input[3];
+		input[8] = ((team[index2].position.x - 600) / 200.00) - input[0];
+		input[9] = ((team[index2].position.y / (jsPageHeight / 2.00))) - input[1];
+		input[10] = (team[index2].position.x / 2.00) - input[2];
+		input[11] = (team[index2].velocity.y / 2.00) - input[3];
 		input[12] = 1; //bias
 
 		//console.log(`input: X:${input[0]} Y:${input[1]} VelX:${input[2]} VelY:${input[3]}`);
 
 		let output: number[] = speciesADN[species].calculateOutput(input);
 		team[i].change_acc(output[0] * max_acc_variation, output[1] * max_acc_variation);
-		//console.log(`X: ${team[0].posX} Y: ${team[0].posY}`);
+		//console.log(`X: ${team[0].posX} Y: ${team[0].position.y}`);
 	}
 }
 
