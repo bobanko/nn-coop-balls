@@ -1,7 +1,13 @@
-type TVector = { x: number, y: number };
+export type TVector = { x: number, y: number };
+
 export class Vector {
-	static zero = new Vector(0, 0);
-	static one = new Vector(1, 1);
+	static get zero() {
+		return new Vector(0, 0);
+	};
+
+	static get one() {
+		return new Vector(1, 1);
+	};
 
 	static distance(vector1: TVector, vector2: TVector): number {
 		return Math.sqrt((vector1.x - vector2.x) ** 2 + (vector1.y - vector2.y) ** 2);
