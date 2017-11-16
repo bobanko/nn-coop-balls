@@ -1,5 +1,5 @@
-import { boxBounds, jsPageHeight, limit } from './helpers';
-import {Circle} from './circle';
+import { boxBounds, jsPageHeight } from './helpers';
+import { Circle } from './circle';
 import { TVector, Vector } from './vector';
 
 const radius = 35;
@@ -17,21 +17,22 @@ export class Defender extends Circle {
 		super(position, radius, color);
 	}
 
-	change_acc(changeX: number, changeY: number): void {
-		this.acc.x += changeX;
-		this.acc.y += changeY;
-		this.acc.x = limit(this.acc.x, this.max_acc, -this.max_acc);
-		this.acc.y = limit(this.acc.y, this.max_acc, -this.max_acc);
+	change_acc(change: TVector): void {
+		this.acc.addSelf(change)
+			.limitSelf(Vector.both(this.max_acc), Vector.both(-this.max_acc));
 
-		this.velocity = this.velocity.add(this.acc);
-		this.velocity.y += this.acc.y;
-		this.velocity.x = limit(this.velocity.x, this.max_vel, -this.max_vel);
-		this.velocity.y = limit(this.velocity.y, this.max_vel, -this.max_vel);
+		this.velocity.addSelf(this.acc)
+			.limitSelf(Vector.both(this.max_vel), Vector.both(-this.max_vel));
 
 		super.updatePos();
 
-		this.position.x = limit(this.position.x, boxBounds.end - this.radius, boxBounds.start + this.radius);
-		this.position.y = limit(this.position.y, jsPageHeight - this.radius, this.radius);
+		this.position.limitSelf({
+			x: boxBounds.end - this.radius,
+			y: jsPageHeight - this.radius
+		}, {
+			x: boxBounds.start + this.radius,
+			y: this.radius
+		})
 	}
 }
 
