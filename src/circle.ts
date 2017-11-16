@@ -12,8 +12,12 @@ export abstract class Circle {
 		this.position = new Vector(position.x, position.y);
 	}
 
+	intersects(other: Circle) {
+		return this.position.distance(other.position) < this.radius + other.radius;
+	}
+
 	updatePos() {
-		this.position = this.position.add(this.velocity);
+		this.position.addSelf(this.velocity);
 	}
 
 	draw() {
