@@ -333,46 +333,37 @@ function update_mafia(): void {
 
 function update_defenders(): void {
 	//update defenders
-	for (let i = 0; i < team.length; i++) {
-		team[i].draw();
-		//calcule inputs
-		let dist: number[] = createArray(team.length);
-		for (let j = 0; j < team.length; j++) {
-			if (j != i) {
-				dist[j] = Vector.distance({x: team[i].position.x, y: team[i].position.y}, {
-					x: team[j].position.x,
-					y: team[j].position.y
-				});
-			}
-			else
-				dist[j] = 99999;
-		}
-		let closest = Math.min(...dist);
-		//console.log("1st: " + closest);
-		let index1: number = 0;
-		let index2: number = 0;
-		while (closest != dist[index1])
-			index1++;
-		dist[index1] = 99999;
-		closest = Math.min(...dist);
-		//console.log("2nd: " + closest);
-		while (closest != dist[index2])
-			index2++;
+	team.forEach(defender => {
+		defender.draw();
+
+		let [closest1, closest2] = team.map(def => ({
+			def,
+			distance: Vector.distance(defender.position, def.position)
+		})).sort((item1, item2) => item1.distance - item2.distance)
+			.slice(1)
+			.slice(0, 2)
+			.map(item => item.def);
 
 
 		let input: number[] = createArray(13);
-		input[0] = (team[i].position.x - 600) / 200.00; //pos x
-		input[1] = (team[i].position.y) / (jsPageHeight / 2.00);//pos y
-		input[2] = team[i].velocity.x / 2.00;//vel x
-		input[3] = (team[i].velocity.y / 2.00);//vel y
-		input[4] = ((team[index1].position.x - 600) / 200.00) - input[0];
-		input[5] = ((team[index1].position.y / (jsPageHeight / 2.00))) - input[1];
-		input[6] = (team[index1].velocity.x / 2.00) - input[2];
-		input[7] = (team[index1].velocity.y / 2.00) - input[3];
-		input[8] = ((team[index2].position.x - 600) / 200.00) - input[0];
-		input[9] = ((team[index2].position.y / (jsPageHeight / 2.00))) - input[1];
-		input[10] = (team[index2].position.x / 2.00) - input[2];
-		input[11] = (team[index2].velocity.y / 2.00) - input[3];
+		input[0] = (defender.position.x - 600) / 200.00; //pos x
+		input[1] = (defender.position.y) / (jsPageHeight / 2.00);//pos y
+
+		input[2] = defender.velocity.x / 2.00;//vel x
+		input[3] = defender.velocity.y / 2.00;//vel y
+
+		input[4] = (closest1.position.x - 600) / 200.00 - input[0];
+		input[5] = (closest1.position.y / (jsPageHeight / 2.00)) - input[1];
+
+		input[6] = closest1.velocity.x / 2.00 - input[2];
+		input[7] = closest1.velocity.y / 2.00 - input[3];
+
+		input[8] = (closest2.position.x - 600) / 200.00 - input[0];
+		input[9] = (closest2.position.y / (jsPageHeight / 2.00)) - input[1];
+
+		input[10] = (closest2.position.x / 2.00) - input[2];
+		input[11] = (closest2.velocity.y / 2.00) - input[3];
+
 		input[12] = 1; //bias
 
 		//console.log(`input: X:${input[0]} Y:${input[1]} VelX:${input[2]} VelY:${input[3]}`);
@@ -380,9 +371,9 @@ function update_defenders(): void {
 		let output: number[] = speciesADN[species].calculateOutput(input);
 
 		let xyOutput = new Vector(output[0], output[1]).multiply(max_acc_variation);
-		team[i].change_acc(xyOutput);
+		defender.change_acc(xyOutput);
 		//console.log(`X: ${team[0].posX} Y: ${team[0].position.y}`);
-	}
+	});
 }
 
 function newSpecies(ancestor: Species[], scores: number[]): Species {
