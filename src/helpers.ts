@@ -14,11 +14,9 @@ export function limit(value: number, max: number, min: number): number {
     return value;
 }
 
-
 export function arraySum(arr: number[]): number {
     return arr.reduce((sum, item) => sum + item, 0);
 }
-
 
 export function createArray(length: number, value = 0): number[] {
     return Array(length).fill(value);
