@@ -378,7 +378,9 @@ function update_defenders(): void {
 		//console.log(`input: X:${input[0]} Y:${input[1]} VelX:${input[2]} VelY:${input[3]}`);
 
 		let output: number[] = speciesADN[species].calculateOutput(input);
-		team[i].change_acc(output[0] * max_acc_variation, output[1] * max_acc_variation);
+
+		let xyOutput = new Vector(output[0], output[1]).multiply(max_acc_variation);
+		team[i].change_acc(xyOutput);
 		//console.log(`X: ${team[0].posX} Y: ${team[0].position.y}`);
 	}
 }
