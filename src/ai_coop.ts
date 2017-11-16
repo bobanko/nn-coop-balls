@@ -4,7 +4,7 @@ import { arraySum, boxBounds, createArray, createMatrix, jsPageHeight, random } 
 
 import { Defender } from './defender';
 import { Enemy } from './enemy';
-import { Species } from './species';
+import { Species, xxxLayerCount } from './species';
 import { XYChart } from './xyChart';
 
 import './styles.less';
@@ -167,6 +167,7 @@ function draw(): void {
 				ordered_speciesADN.push(speciesADN[index]);
 			}
 			scores = ordered_scores;
+
 			top_score_gen = scores[0];
 			speciesADN = ordered_speciesADN;
 			//new species
@@ -291,11 +292,12 @@ function mafia_spawn(): void {
 	if (random(0, 1) < (last_spawn * 0.0001)) {
 		let radius = (Math.exp(-frame / 20000) * 40);
 		let vel = 2;
+		//shit?
 		if (frame > 10000)
 			vel += frame / 10000;
 		//console.log(`Spawn: Radius: ${radius} Vel:${vel}   (Frame:${frame})`);
 
-		vel = 10;//todo: remove (debug only)
+		vel = 10;//todo: remove (debug only) or not?
 
 		let enemyStartPos = {
 			x: -radius,
@@ -311,7 +313,7 @@ function mafia_spawn(): void {
 }
 
 function update_mafia(): void {
-
+	//todo: rewrite - but collection modification problem
 	for (let i = mafia.length - 1; i >= 0; i--) {
 		mafia[i].updatePos();
 		if (mafia[i].intersect(team)) {
@@ -349,7 +351,7 @@ function update_defenders(): void {
 		let [closest1, closest2] = getClosestDefenders(defender, team, 2);
 
 
-		let input: number[] = createArray(13);
+		let input: number[] = createArray(xxxLayerCount);
 		input[0] = (defender.position.x - 600) / 200.00; //pos x
 		input[1] = (defender.position.y) / (jsPageHeight / 2.00);//pos y
 
@@ -385,16 +387,13 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 	let total_score = 0;
 	let float_scores: number[] = createArray(speciesTotal);
 	//normalize
-	for (let i = 0; i < speciesTotal; i++) {
-		total_score += scores[i] ** 2;
-	}
 
-	for (let i = 0; i < speciesTotal; i++) {
-		float_scores[i] = (scores[i] ** 2) / total_score;
-	}
+	total_score = scores.reduce((total, score) => total + score ** 2, 0);
+	float_scores = scores.map(score => score ** 2 / total_score);
+
 
 	//calculate genes
-	for (let i = 0; i < 13; i++)
+	for (let i = 0; i < xxxLayerCount; i++)
 		for (let j = 0; j < 10; j++) {
 			let r = random(0, 1);
 			let index = 0;
@@ -421,7 +420,7 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 		}
 
 	//calculate mutations
-	for (let i = 0; i < 13; i++)
+	for (let i = 0; i < xxxLayerCount; i++)
 		for (let j = 0; j < 10; j++) {
 			let r = random(0, 1);
 			if (r < mutation_rate)
