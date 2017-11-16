@@ -331,18 +331,22 @@ function update_mafia(): void {
 	}
 }
 
+function getClosestDefenders(current: Defender, items: Defender[], count: number): Defender[] {
+	return items.map(def => ({
+		def,
+		distance: Vector.distance(current.position, def.position)
+	})).sort((item1, item2) => item1.distance - item2.distance)
+		.slice(1)
+		.slice(0, count)
+		.map(item => item.def);
+}
+
 function update_defenders(): void {
 	//update defenders
 	team.forEach(defender => {
 		defender.draw();
 
-		let [closest1, closest2] = team.map(def => ({
-			def,
-			distance: Vector.distance(defender.position, def.position)
-		})).sort((item1, item2) => item1.distance - item2.distance)
-			.slice(1)
-			.slice(0, 2)
-			.map(item => item.def);
+		let [closest1, closest2] = getClosestDefenders(defender, team, 2);
 
 
 		let input: number[] = createArray(13);
