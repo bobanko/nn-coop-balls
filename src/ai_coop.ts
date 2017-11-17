@@ -403,7 +403,7 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 			}
 			index--;
 			let layer: number[][] = ancestor[index].firstLayer;
-			baby.set_layer(1, i, j, layer[i][j]);
+			baby.layers[0][i][j] = layer[i][j];
 		}
 
 	for (let i = 0; i < 11; i++)
@@ -416,7 +416,7 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 			}
 			index--;
 			let layer: number[][] = ancestor[index].secondLayer;
-			baby.set_layer(2, i, j, layer[i][j]);
+			baby.layers[1][i][j] = layer[i][j];
 		}
 
 	//calculate mutations
@@ -424,14 +424,14 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 		for (let j = 0; j < 10; j++) {
 			let r = random(0, 1);
 			if (r < mutation_rate)
-				baby.set_layer(1, i, j, random(-1, 1));
+				baby.layers[0][i][j] = random(-1, 1);
 		}
 
 	for (let i = 0; i < 11; i++)
 		for (let j = 0; j < 2; j++) {
 			let r = random(0, 1);
 			if (r < mutation_rate)
-				baby.set_layer(2, i, j, random(-1, 1));
+				baby.layers[1][i][j] = random(-1, 1);
 		}
 
 	return baby;
