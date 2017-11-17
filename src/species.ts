@@ -1,9 +1,9 @@
 import { createArray, createMatrix, random } from './helpers';
 
+export const inputsCount = 13;
 const firstLayerNeuronsCount = 10;
 const hiddenNeuronsCount = 11;
 const outputCount = 2;
-export const xxxLayerNeuronsCount = 13; //todo: unknown value?
 
 export class Species {
 	layers: number[][][];
@@ -20,7 +20,7 @@ export class Species {
 		this.layers = [];
 
 		this.layers[0] = createMatrix(
-			xxxLayerNeuronsCount, firstLayerNeuronsCount,
+			inputsCount, firstLayerNeuronsCount,
 			() => isRandom ? random(-1, 1) : 0);
 		this.layers[1] = createMatrix(
 			hiddenNeuronsCount, outputCount,
@@ -37,20 +37,16 @@ export class Species {
 
 		//todo: refac
 		for (let i = 0; i < hiddenNeuronsCount; i++) {
-			for (let j = 0; j < xxxLayerNeuronsCount; j++) {
-				hidden[i] += input[j] * this.firstLayer[j][i];
-				//activation function
-				hidden[i] = activationFn(hidden[i]);
+			for (let j = 0; j < inputsCount; j++) {
+				hidden[i] = activationFn(hidden[i] + input[j] * this.firstLayer[j][i]);
 			}
 		}
 
-		hidden[hiddenNeuronsCount - 1] = 1; //last is the bias
+		hidden[hiddenNeuronsCount - 1] = 1; //last is the bias (needed for each hidden layer)
 
 		for (let i = 0; i < outputCount; i++) {
 			for (let j = 0; j < hiddenNeuronsCount; j++) {
-				output[i] += hidden[j] * this.secondLayer[j][i];
-				//activation function
-				output[i] = activationFn(output[i]);
+				output[i] = activationFn(output[i] + hidden[j] * this.secondLayer[j][i]);
 			}
 		}
 
