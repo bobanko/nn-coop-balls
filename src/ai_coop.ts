@@ -4,7 +4,7 @@ import { arraySum, boxBounds, createArray, createMatrix, jsPageHeight, random } 
 
 import { Defender } from './defender';
 import { Enemy } from './enemy';
-import { Species, xxxLayerCount } from './species';
+import { Species, xxxLayerNeuronsCount } from './species';
 import { XYChart } from './xyChart';
 
 import './styles.less';
@@ -351,7 +351,7 @@ function update_defenders(): void {
 		let [closest1, closest2] = getClosestDefenders(defender, team, 2);
 
 
-		let input: number[] = createArray(xxxLayerCount);
+		let input: number[] = createArray(xxxLayerNeuronsCount);
 		input[0] = (defender.position.x - 600) / 200.00; //pos x
 		input[1] = (defender.position.y) / (jsPageHeight / 2.00);//pos y
 
@@ -393,7 +393,7 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 
 
 	//calculate genes
-	for (let i = 0; i < xxxLayerCount; i++)
+	for (let i = 0; i < xxxLayerNeuronsCount; i++)
 		for (let j = 0; j < 10; j++) {
 			let r = random(0, 1);
 			let index = 0;
@@ -402,7 +402,7 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 				index++;
 			}
 			index--;
-			let layer: number[][] = ancestor[index].first_layer;
+			let layer: number[][] = ancestor[index].firstLayer;
 			baby.set_layer(1, i, j, layer[i][j]);
 		}
 
@@ -415,12 +415,12 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 				index++;
 			}
 			index--;
-			let layer: number[][] = ancestor[index].second_layer;
+			let layer: number[][] = ancestor[index].secondLayer;
 			baby.set_layer(2, i, j, layer[i][j]);
 		}
 
 	//calculate mutations
-	for (let i = 0; i < xxxLayerCount; i++)
+	for (let i = 0; i < xxxLayerNeuronsCount; i++)
 		for (let j = 0; j < 10; j++) {
 			let r = random(0, 1);
 			if (r < mutation_rate)
