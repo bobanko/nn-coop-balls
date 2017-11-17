@@ -1,36 +1,30 @@
 import { createArray, createMatrix, random } from './helpers';
 
+const firstLayerNeuronsCount = 10;
 const hiddenNeuronsCount = 11;
 const outputCount = 2;
-export const xxxLayerCount = 13; //todo: unknown
+export const xxxLayerNeuronsCount = 13; //todo: unknown value?
 
 export class Species {
+	layers: number[][][];
 
-	//todo: refac make sizable?
-	first_layer: number[][];
-	second_layer: number[][];
+	get firstLayer() {
+		return this.layers[0];
+	}
+
+	get secondLayer() {
+		return this.layers[1];
+	}
 
 	constructor(isRandom: boolean) {
+		this.layers = [];
 
-		//todo: layer sizes to vars
-		this.first_layer = createMatrix(xxxLayerCount, 10);
-		this.second_layer = createMatrix(hiddenNeuronsCount, outputCount);
-
-		if (isRandom) {
-			for (let i = 0; i < xxxLayerCount; i++) {
-				this.first_layer[i] = [];
-				for (let /*int*/ j = 0; j < 10; j++) {
-					this.first_layer[i][j] = random(-1, 1);
-				}
-			}
-
-			for (let /*int*/ i = 0; i < hiddenNeuronsCount; i++) {
-				this.second_layer[i] = [];
-				for (let /*int*/ j = 0; j < outputCount; j++) {
-					this.second_layer[i][j] = random(-1, 1);
-				}
-			}
-		}
+		this.layers[0] = createMatrix(
+			xxxLayerNeuronsCount, firstLayerNeuronsCount,
+			() => isRandom ? random(-1, 1) : 0);
+		this.layers[1] = createMatrix(
+			hiddenNeuronsCount, outputCount,
+			() => isRandom ? random(-1, 1) : 0);
 	}
 
 	calculateOutput(input: number[]): number[] {
@@ -45,15 +39,15 @@ export class Species {
 
 		//todo: refac
 		for (let i = 0; i < 10; i++)
-			for (let j = 0; j < xxxLayerCount; j++) {
-				hidden[i] += input[j] * this.first_layer[j][i];
+			for (let j = 0; j < xxxLayerNeuronsCount; j++) {
+				hidden[i] += input[j] * this.firstLayer[j][i];
 				//activation function
 				hidden[i] = activationFn(hidden[i]);
 			}
 
 		for (let i = 0; i < outputCount; i++)
 			for (let j = 0; j < hiddenNeuronsCount; j++) {
-				output[i] += hidden[j] * this.second_layer[j][i];
+				output[i] += hidden[j] * this.secondLayer[j][i];
 				//activation function
 				output[i] = activationFn(output[i]);
 			}
@@ -64,9 +58,9 @@ export class Species {
 	set_layer(layer: number, i: number, j: number, value: number) {
 		//todo: refac
 		if (layer === 1)
-			this.first_layer[i][j] = value;
+			this.firstLayer[i][j] = value;
 
 		if (layer === 2)
-			this.second_layer[i][j] = value;
+			this.secondLayer[i][j] = value;
 	}
 }
