@@ -4,7 +4,7 @@ import { arraySum, boxBounds, createArray, createMatrix, jsPageHeight, random } 
 
 import { Defender } from './defender';
 import { Enemy } from './enemy';
-import { Species, xxxLayerNeuronsCount } from './species';
+import { Species, inputsCount } from './species';
 import { XYChart } from './xyChart';
 
 import './styles.less';
@@ -257,19 +257,21 @@ function graphics(): void {
 	line(boxBounds.end, 0, boxBounds.end, jsPageHeight);
 	fill('#173e43');
 	textSize(20);
-	text('Generation ' + generation, 810, 30);
-	text('Species: ' + (species + 1) + '/' + speciesTotal, 810, 55);
-	text('Top Score: ' + top_score, 810, 80);
+	let padding = 10;
+	let textBlockPosX = boxBounds.end + padding;
+	text('Generation ' + generation, textBlockPosX, 30);
+	text('Species: ' + (species + 1) + '/' + speciesTotal, textBlockPosX, 55);
+	text('Top Score: ' + top_score, textBlockPosX, 80);
 	textSize(22);
-	text('Generation Info', 810, 115);
-	text('Species Info', 810, 210);
-	text('Leaderboards', 810, 285);
+	text('Generation Info', textBlockPosX, 115);
+	text('Species Info', textBlockPosX, 210);
+	text('Leaderboards', textBlockPosX, 285);
 	textSize(18);
-	text(`Average:       ${ arraySum(scores) / species }`, 810, 135); //change to 1
-	text(`Last Average:  ${ last_gen_avg}`, 810, 155);
-	text(`Best Average:  ${top_gen_avg}`, 810, 175);
-	text(`Current Score: ${renderScore(score)}`, 810, 230);
-	text(`❤Lives:       ${renderLives(lives, num_lives)}`, 810, 250);
+	text(`Average:       ${ arraySum(scores) / species }`, textBlockPosX, 135); //change to 1
+	text(`Last Average:  ${ last_gen_avg}`, textBlockPosX, 155);
+	text(`Best Average:  ${top_gen_avg}`, textBlockPosX, 175);
+	text(`Current Score: ${renderScore(score)}`, textBlockPosX, 230);
+	text(`❤Lives:       ${renderLives(lives, num_lives)}`, textBlockPosX, 250);
 
 	for (let i = 0; i < 10; i++) {
 		fill('#173e43', 255 - ((generation - leaderboard[1][i]) * 7));
@@ -279,12 +281,12 @@ function graphics(): void {
 			else
 				fill('#3fb0ac');
 		}
-		text((i + 1) + '. Generation ' + leaderboard[1][i] + ': ' + leaderboard[0][i], 810, 310 + i * 21);
+		text((i + 1) + '. Generation ' + leaderboard[1][i] + ': ' + leaderboard[0][i], textBlockPosX, 310 + i * 21);
 	}
 	textSize(12);
 
-	lineChart.draw(810, 535, 270, 175);
-	medianChart.draw(810, 535, 270, 175);
+	lineChart.draw(textBlockPosX, 535, 270, 175);
+	medianChart.draw(textBlockPosX, 535, 270, 175);
 }
 
 function mafia_spawn(): void {
@@ -350,24 +352,25 @@ function update_defenders(): void {
 
 		let [closest1, closest2] = getClosestDefenders(defender, team, 2);
 
+		const boxWidth = boxBounds.end - boxBounds.start;
 
-		let input: number[] = createArray(xxxLayerNeuronsCount);
+		let input: number[] = createArray(inputsCount);
 		input[0] = (defender.position.x - 600) / 200.00; //pos x
 		input[1] = (defender.position.y) / (jsPageHeight / 2.00);//pos y
 
 		input[2] = defender.velocity.x / 2.00;//vel x
 		input[3] = defender.velocity.y / 2.00;//vel y
 
-		input[4] = (closest1.position.x - 600) / 200.00 - input[0];
+		input[4] = (closest1.position.x - 600) / 200.00 - input[0];//pos x
 		input[5] = (closest1.position.y / (jsPageHeight / 2.00)) - input[1];
 
-		input[6] = closest1.velocity.x / 2.00 - input[2];
+		input[6] = closest1.velocity.x / 2.00 - input[2];//vel x
 		input[7] = closest1.velocity.y / 2.00 - input[3];
 
-		input[8] = (closest2.position.x - 600) / 200.00 - input[0];
+		input[8] = (closest2.position.x - 600) / 200.00 - input[0];//pos x
 		input[9] = (closest2.position.y / (jsPageHeight / 2.00)) - input[1];
 
-		input[10] = (closest2.position.x / 2.00) - input[2];
+		input[10] = (closest2.velocity.x / 2.00) - input[2];
 		input[11] = (closest2.velocity.y / 2.00) - input[3];
 
 		input[12] = 1; //bias
@@ -393,7 +396,7 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 
 
 	//calculate genes
-	for (let i = 0; i < xxxLayerNeuronsCount; i++)
+	for (let i = 0; i < inputsCount; i++)
 		for (let j = 0; j < 10; j++) {
 			let r = random(0, 1);
 			let index = 0;
@@ -420,7 +423,7 @@ function newSpecies(ancestor: Species[], scores: number[]): Species {
 		}
 
 	//calculate mutations
-	for (let i = 0; i < xxxLayerNeuronsCount; i++)
+	for (let i = 0; i < inputsCount; i++)
 		for (let j = 0; j < 10; j++) {
 			let r = random(0, 1);
 			if (r < mutation_rate)
